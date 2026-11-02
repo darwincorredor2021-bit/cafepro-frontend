@@ -559,24 +559,29 @@ class GestorCafePro {
    async actualizarPrecioRealTime() {
         const icon = document.getElementById('syncIcon');
         const precioDisp = document.getElementById('precioDisplay');
+        const avisoDisp = document.getElementById('precioAviso'); // <--- Elemento del aviso
         
         if (icon) icon.classList.add('girando');
         
         try {
-            // Usa aquí tu enlace real de Render
             const urlAPI = 'https://cafepro-backend.onrender.com/api/precio';
             const respuesta = await fetch(urlAPI);
             const datos = await respuesta.json();
             
             if (datos && datos.precioCarga) {
-                // El backend devuelve 'precioCarga' (con C mayúscula) según el nuevo código
                 this.precioReferenciaHoy = datos.precioCarga;
                 if (precioDisp) {
                     precioDisp.innerText = "$" + this.precioReferenciaHoy.toLocaleString('es-CO');
                 }
+                // Muestra la nota técnica entregada por el backend
+                if (avisoDisp) {
+                    avisoDisp.innerText = datos.aviso || 
+                        "Estimación basada en la Bolsa de Nueva York y TRM del día (FR: 94). El precio oficial lo fija la FNC.";
+                }
             }
         } catch (error) {
             console.error("Error consultando el precio en vivo:", error);
+            if (avisoDisp) avisoDisp.innerText = "No se pudo actualizar el aviso de referencia.";
         } finally {
             if (icon) icon.classList.remove('girando');
         }
