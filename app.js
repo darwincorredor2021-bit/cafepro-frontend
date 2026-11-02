@@ -1,8 +1,4 @@
 // ============================================================
-// ⚠️ CONFIGURACIÓN: pega aquí la URL pública que te dé Render
-// (sin barra al final y SIN "/api"). Ejemplo:
-// const URL_BACKEND_NUBE = 'https://cafepro-backend-abcd.onrender.com';
-// ============================================================
 const URL_BACKEND_NUBE = 'https://cafepro-backend.onrender.com';
 const URL_BACKEND_LOCAL = 'http://localhost:3000';
 
@@ -43,6 +39,7 @@ class GestorCafePro {
         this.asignarEventos();
         this.despertarServidor();
         this.actualizarPrecioRealTime();
+        this.cargarNoticias();
     }
 
     // Render (plan gratis) duerme el servidor tras 15 min sin visitas y tarda
@@ -91,7 +88,6 @@ class GestorCafePro {
             });
         });
     }
-
     // -------------------------------------------------------------
     // CONSUMO DE API PÚBLICA (clima)
     // -------------------------------------------------------------
@@ -584,6 +580,41 @@ class GestorCafePro {
             if (avisoDisp) avisoDisp.innerText = "No se pudo sincronizar el aviso del mercado.";
         } finally {
             if (icon) icon.classList.remove('girando');
+        }
+    }
+
+    async cargarNoticias() {
+        const contenedor = document.getElementById('contenedor-noticias');
+        if (!contenedor) return;
+
+        try {
+            // Consulta el nuevo endpoint RSS de tu backend
+            const resp = await this.peticionAPI('/noticias');
+            
+            if (resp.ok && resp.datos.noticias && resp.datos.noticias.length > 0) {
+                contenedor.innerHTML = '';
+                resp.datos.noticias.forEach(item => {
+                    contenedor.innerHTML += `
+                        <div class="card shadow-sm border-0 mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="badge bg-success text-uppercase">${item.fuente}</span>
+                                    <span class="text-muted texto-3xs">${item.fecha}</span>
+                                </div>
+                                <h5 class="h6 fw-bold text-dark mb-2">${item.titulo}</h5>
+                                <a href="${item.enlace}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-success btn-sm texto-2xs mt-1">
+                                    Leer noticia completa ➔
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                contenedor.innerHTML = '<p class="text-center text-muted my-4">No hay noticias disponibles en este momento.</p>';
+            }
+        } catch (error) {
+            console.error('Error al cargar noticias:', error);
+            contenedor.innerHTML = '<p class="text-center text-muted my-4">No se pudieron sincronizar las noticias en vivo.</p>';
         }
     }
 }
