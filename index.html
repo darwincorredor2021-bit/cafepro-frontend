@@ -52,7 +52,7 @@
     <nav class="navbar sticky-top shadow-sm header-gradient py-2" data-bs-theme="dark">
         <div class="container-fluid px-3 d-flex flex-column gap-2">
             
-            <!-- Fila Superior: Logo, Nombre de la Finca y Fecha/Hora a la derecha -->
+            <!-- Fila Superior: Logo, Nombre de la Finca y Botón Salir -->
             <div class="d-flex justify-content-between align-items-center w-100">
                 <div class="d-flex align-items-center gap-2">
                     <div class="bg-white p-1 rounded">
@@ -63,16 +63,16 @@
                         <p id="header-propietario" class="mb-0 small opacity-75 text-uppercase fw-bold texto-2xs">Bienvenido</p>
                     </div>
                 </div>
-                <!-- Fecha y Hora ahora ubicadas arriba a la derecha -->
+                <!-- Botón Salir reubicado arriba a la derecha -->
+                <button id="btn-cerrar-sesion" class="btn btn-outline-light btn-sm rounded-pill fw-bold texto-2xs px-3">SALIR</button>
+            </div>
+
+            <!-- Fila Inferior: Fecha y Hora ordenadas a la derecha -->
+            <div class="d-flex justify-content-end w-100">
                 <div class="bg-dark bg-opacity-25 px-3 py-1 rounded-pill border border-light border-opacity-25 text-white d-flex align-items-center">
                     <span id="fecha-header" class="fw-bold text-uppercase border-end border-light border-opacity-50 pe-2 me-2 texto-2xs"></span>
                     <span id="reloj" class="font-monospace fw-bold texto-2xs" aria-live="polite">12:00</span>
                 </div>
-            </div>
-
-            <!-- Fila Inferior: Botón SALIR alineado a la derecha -->
-            <div class="d-flex justify-content-end w-100">
-                <button id="btn-cerrar-sesion" class="btn btn-outline-light btn-sm rounded-pill fw-bold texto-2xs px-4">SALIR</button>
             </div>
 
         </div>
