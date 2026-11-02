@@ -48,23 +48,23 @@
         </div>
     </div>
 
-    <!-- CABECERA NAV (Estilo Bootstrap Navbar) -->
+    <!-- CABECERA NAV (Reorganizada tipo app premium agrícola) -->
     <nav class="navbar sticky-top shadow-sm header-gradient py-2" data-bs-theme="dark">
         <div class="container-fluid px-3 d-flex flex-column gap-2">
             
-            <!-- Fila Superior: Logo, Nombre de la Finca y Fecha/Hora a la derecha -->
-            <div class="d-flex justify-content-between align-items-center w-100">
+            <!-- Fila Superior: Logo, Finca/Agricultor y Fecha a la derecha -->
+            <div class="d-flex justify-content-between align-items-center w-100 flex-wrap gap-2">
                 <div class="d-flex align-items-center gap-2">
-                    <div class="bg-white p-1 rounded">
+                    <div class="bg-white p-1 rounded shadow-sm">
                         <span class="fs-4" aria-hidden="true">☕</span>
                     </div>
-                    <div class="text-white">
-                        <h1 id="header-finca" class="h6 mb-0 fw-bold text-uppercase">MI CAFETAL</h1>
-                        <p id="header-propietario" class="mb-0 small opacity-75 text-uppercase fw-bold texto-2xs">Bienvenido</p>
+                    <div class="text-white text-truncate">
+                        <h1 id="header-finca" class="header-finca-nombre mb-0 text-uppercase text-truncate">MI CAFETAL</h1>
+                        <p id="header-propietario" class="mb-0 text-uppercase text-truncate opacity-90">Bienvenido</p>
                     </div>
                 </div>
-                <!-- Fecha y Hora ahora ubicadas arriba a la derecha -->
-                <div class="bg-dark bg-opacity-25 px-3 py-1 rounded-pill border border-light border-opacity-25 text-white d-flex align-items-center">
+                <!-- Fecha y Hora ubicadas arriba a la derecha -->
+                <div class="bg-dark bg-opacity-25 px-3 py-1 rounded-pill border border-light border-opacity-25 text-white d-flex align-items-center flex-shrink-0">
                     <span id="fecha-header" class="fw-bold text-uppercase border-end border-light border-opacity-50 pe-2 me-2 texto-2xs"></span>
                     <span id="reloj" class="font-monospace fw-bold texto-2xs" aria-live="polite">12:00</span>
                 </div>
@@ -72,7 +72,7 @@
 
             <!-- Fila Inferior: Botón SALIR alineado a la derecha -->
             <div class="d-flex justify-content-end w-100">
-                <button id="btn-cerrar-sesion" class="btn btn-outline-light btn-sm rounded-pill fw-bold texto-2xs px-4">SALIR</button>
+                <button id="btn-cerrar-sesion" class="btn btn-outline-light rounded-pill fw-bold btn-salir-app">SALIR</button>
             </div>
 
         </div>

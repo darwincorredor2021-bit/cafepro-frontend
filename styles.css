@@ -34,7 +34,49 @@ body::before {
 
 .text-cafe-oscuro { color: var(--cafe-oscuro) !important; }
 .text-cafe-medio { color: var(--cafe-medio) !important; }
-.header-gradient { background: linear-gradient(135deg, var(--cafe-oscuro) 0%, var(--cafe-medio) 100%); }
+.header-gradient { 
+    background: linear-gradient(135deg, var(--cafe-oscuro) 0%, var(--cafe-medio) 100%); 
+    padding: 16px !important;
+}
+
+/* Reorganización de la Cabecera y Tipografía Responsive */
+.header-gradient .container-fluid {
+    gap: 12px !important;
+}
+
+.header-finca-nombre {
+    font-size: clamp(18px, 5vw, 22px);
+    font-weight: 800;
+    color: #ffffff;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#header-propietario {
+    font-size: clamp(12px, 3.5vw, 14px);
+    font-weight: 400;
+    opacity: 0.9;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+/* Botón SALIR mejorado para pulgar */
+.btn-salir-app {
+    padding: 10px 22px;
+    font-size: clamp(14px, 4vw, 15px);
+    font-weight: bold;
+    border-radius: 20px;
+    border: 1.5px solid #ffffff;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-salir-app:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border-color: #ffffff;
+}
 
 .btn-accion {
     background: linear-gradient(to bottom, var(--cafe-medio), var(--cafe-oscuro));
