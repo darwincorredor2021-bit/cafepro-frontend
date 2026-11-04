@@ -48,35 +48,33 @@
         </div>
     </div>
 
-    <!-- CABECERA NAV (Estilo Bootstrap Navbar) -->
-    <nav class="navbar sticky-top shadow-sm header-gradient py-2" data-bs-theme="dark">
-        <div class="container-fluid px-3 d-flex flex-column gap-2">
-            
-            <!-- Fila Superior: Logo, Nombre de la Finca y Botón Salir -->
-            <div class="d-flex justify-content-between align-items-center w-100">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="bg-white p-1 rounded">
-                        <span class="fs-4" aria-hidden="true">☕</span>
-                    </div>
-                    <div class="text-white">
-                        <h1 id="header-finca" class="h6 mb-0 fw-bold text-uppercase">MI CAFETAL</h1>
-                        <p id="header-propietario" class="mb-0 small opacity-75 text-uppercase fw-bold texto-2xs">Bienvenido</p>
+    <!-- CABECERA -->
+    <header class="app-header">
+        <div class="app-header__inner">
+
+            <!-- NIVEL 1: marca (izquierda) + fecha y hora (derecha) -->
+            <div class="app-header__top">
+                <div class="app-header__brand">
+                    <div class="app-header__logo" aria-hidden="true">☕</div>
+                    <div class="app-header__titles">
+                        <h1 id="header-finca" class="app-header__finca">MI CAFETAL</h1>
+                        <p id="header-propietario" class="app-header__agricultor">Bienvenido</p>
                     </div>
                 </div>
-                <!-- Botón Salir reubicado arriba a la derecha -->
-                <button id="btn-cerrar-sesion" class="btn btn-outline-light btn-sm rounded-pill fw-bold texto-2xs px-3">SALIR</button>
+
+                <div class="app-header__fechahora">
+                    <span id="fecha-header" class="app-header__fecha"></span>
+                    <span id="reloj" class="app-header__reloj">12:00</span>
+                </div>
             </div>
 
-            <!-- Fila Inferior: Fecha y Hora ordenadas a la derecha -->
-            <div class="d-flex justify-content-end w-100">
-                <div class="bg-dark bg-opacity-25 px-3 py-1 rounded-pill border border-light border-opacity-25 text-white d-flex align-items-center">
-                    <span id="fecha-header" class="fw-bold text-uppercase border-end border-light border-opacity-50 pe-2 me-2 texto-2xs"></span>
-                    <span id="reloj" class="font-monospace fw-bold texto-2xs" aria-live="polite">12:00</span>
-                </div>
+            <!-- NIVEL 2: botón SALIR alineado a la derecha -->
+            <div class="app-header__acciones">
+                <button id="btn-cerrar-sesion" type="button" class="app-header__salir">SALIR</button>
             </div>
 
         </div>
-    </nav>
+    </header>
 
     <!-- CONTENEDOR PRINCIPAL -->
     <main class="container py-4 main-app">
@@ -114,7 +112,7 @@
                         </button>
                     </div>
                     <div class="text-center">
-                        <h2 id="precioDisplay" class="display-5 fw-bold text-dark mb-0" aria-live="polite">$1,850,000</h2>
+                        <h2 id="precioDisplay" class="display-5 fw-bold text-dark mb-0" aria-live="polite">Cargando...</h2>
                         <p class="small text-muted fw-bold text-uppercase">Carga 125kg Pergamino Seco</p>
                     </div>
                     <!-- En index.html, debajo del contenedor del precio -->
@@ -201,7 +199,6 @@
             <div id="contenedor-noticias">
                 <p class="text-center text-muted my-4">Cargando noticias del sector...</p>
             </div>
-        </div>
         </div>
 
     </main>

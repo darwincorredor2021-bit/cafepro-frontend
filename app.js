@@ -23,7 +23,8 @@ class GestorCafePro {
         };
 
         // El precio de referencia es el de una CARGA de 125 kg de pergamino seco
-        this.precioReferenciaHoy = 1850000;
+        this.precioReferenciaHoy = 2040000; // valor inicial; luego lo reemplaza el precio real del backend
+        this.precioCargado = false;
         this.kilosPorCarga = 125;
 
         // Inicializar la aplicación
@@ -552,34 +553,83 @@ class GestorCafePro {
         }
     }
 
-   async actualizarPrecioRealTime() {
-        const icon = document.getElementById('syncIcon');
+    // Consulta nuestro backend (GET /api/precio) y pinta el precio en pantalla.
+    // Usa this.apiUrl, así funciona igual en tu PC (localhost) y en la nube.
+    async cargarPrecioReal() {
         const precioDisp = document.getElementById('precioDisplay');
-        const avisoDisp = document.getElementById('precioAviso'); // <--- 1. CAPTURAR EL ELEMENTO DEL AVISO
-        
+        const aviso = document.getElementById('precioAviso');
+        const icon = document.getElementById('syncIcon');
+        if (!precioDisp) return;
+
+        // Mientras consulta: ícono girando y mensaje de espera
         if (icon) icon.classList.add('girando');
-        
+        if (aviso) aviso.textContent = 'Consultando el mercado... (la primera vez puede tardar hasta 1 minuto)';
+        if (!this.precioCargado) precioDisp.textContent = 'Cargando...';
+
         try {
-            const urlAPI = 'https://cafepro-backend.onrender.com/api/precio';
-            const respuesta = await fetch(urlAPI);
-            const datos = await respuesta.json();
-            
-            if (datos && datos.precioCarga) {
-                this.precioReferenciaHoy = datos.precioCarga;
-                if (precioDisp) {
-                    precioDisp.innerText = "$" + this.precioReferenciaHoy.toLocaleString('es-CO');
+            const respuesta = await fetch(`${this.apiUrl}/precio`);
+            if (!respuesta.ok) throw new Error(`El servidor respondió ${respuesta.status}`);
+            const d = await respuesta.json();
+            if (!d || typeof d.precioCarga !== 'number') throw new Error('Respuesta sin precio válido');
+
+            // 1. Guardamos el precio: también se usa como precio por defecto en Finanzas
+            this.precioReferenciaHoy = d.precioCarga;
+            this.precioCargado = true;
+
+            // 2. Precio grande en pantalla
+            precioDisp.textContent = '$' + d.precioCarga.toLocaleString('es-CO');
+
+            // 3. Línea pequeña con la fuente de los datos
+            let texto;
+            if (d.detalle && d.detalle.bolsa && d.detalle.trm) {
+                const bolsa = d.detalle.bolsa.centavosPorLibra.toLocaleString('es-CO');
+                const trm = d.detalle.trm.valor.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                const hora = new Date(d.actualizado).toLocaleString('es-CO', {
+                    day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+                });
+                texto = `Estimado · Bolsa NY ${bolsa} ¢/lb · TRM $${trm} · ${hora}`;
+                if (d.esRespaldo) {
+                    texto += ' · ⚠ incluye valores de respaldo (no se pudo consultar el mercado en vivo)';
                 }
-                
-                // <--- 2. INYECTAR EL TEXTO DE AVISO QUE VIENE DEL BACKEND
-                if (avisoDisp) {
-                    avisoDisp.innerText = datos.aviso || "Valor estimado a partir de la bolsa de Nueva York y la TRM.";
-                }
+            } else {
+                texto = d.aviso || 'Valor estimado a partir de la bolsa de Nueva York y la TRM.';
             }
+            if (aviso) aviso.textContent = texto;
+
         } catch (error) {
-            console.error("Error consultando el precio en vivo:", error);
-            if (avisoDisp) avisoDisp.innerText = "No se pudo sincronizar el aviso del mercado.";
+            console.error('No se pudo obtener el precio real:', error);
+            // Mostramos el último precio que teníamos para que la pantalla nunca quede vacía
+            precioDisp.textContent = '$' + this.precioReferenciaHoy.toLocaleString('es-CO');
+            if (aviso) aviso.textContent = 'Sin conexión con el servidor. Mostrando un precio de referencia.';
         } finally {
             if (icon) icon.classList.remove('girando');
+        }
+    }
+
+    // El botón con las flechitas circulares (y init) consultan el precio real.
+    // El backend guarda la respuesta 15 minutos, así que no gasta las APIs externas.
+    actualizarPrecioRealTime() {
+        return this.cargarPrecioReal();
+    }
+
+    // Convierte texto externo en texto seguro para insertarlo con innerHTML
+    // (los títulos vienen de feeds RSS de terceros: nunca se deben insertar tal cual).
+    escaparHTML(texto) {
+        return String(texto ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    // Solo permite enlaces http/https (bloquea javascript: y otros)
+    enlaceSeguro(url) {
+        try {
+            const u = new URL(url);
+            return (u.protocol === 'https:' || u.protocol === 'http:') ? this.escaparHTML(u.href) : '#';
+        } catch (e) {
+            return '#';
         }
     }
 
@@ -588,27 +638,24 @@ class GestorCafePro {
         if (!contenedor) return;
 
         try {
-            // Consulta el nuevo endpoint RSS de tu backend
+            // Consulta el endpoint RSS de tu backend
             const resp = await this.peticionAPI('/noticias');
-            
+
             if (resp.ok && resp.datos.noticias && resp.datos.noticias.length > 0) {
-                contenedor.innerHTML = '';
-                resp.datos.noticias.forEach(item => {
-                    contenedor.innerHTML += `
-                        <div class="card shadow-sm border-0 mb-3">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="badge bg-success text-uppercase">${item.fuente}</span>
-                                    <span class="text-muted texto-3xs">${item.fecha}</span>
-                                </div>
-                                <h5 class="h6 fw-bold text-dark mb-2">${item.titulo}</h5>
-                                <a href="${item.enlace}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-success btn-sm texto-2xs mt-1">
-                                    Leer noticia completa ➔
-                                </a>
+                contenedor.innerHTML = resp.datos.noticias.map(item => `
+                    <div class="card shadow-sm border-0 mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-success text-uppercase">${this.escaparHTML(item.fuente)}</span>
+                                <span class="text-muted texto-3xs">${this.escaparHTML(item.fecha)}</span>
                             </div>
+                            <h5 class="h6 fw-bold text-dark mb-2">${this.escaparHTML(item.titulo)}</h5>
+                            <a href="${this.enlaceSeguro(item.enlace)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-success btn-sm texto-2xs mt-1">
+                                Leer noticia completa ➔
+                            </a>
                         </div>
-                    `;
-                });
+                    </div>
+                `).join('');
             } else {
                 contenedor.innerHTML = '<p class="text-center text-muted my-4">No hay noticias disponibles en este momento.</p>';
             }
