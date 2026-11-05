@@ -4,14 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CaféPro Colombia - Gestión Integral</title>
-    <!-- 1. Carga de Bootstrap 5.3.8 -->
+
+    <!-- Bootstrap 5.3.8: framework de estilos (cuadrículas, botones, tarjetas) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- 2. estilos personalizados -->
+
+    <!-- Estilos propios de CaféPro -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body class="bg-light pb-5">
 
-    <!-- PANTALLA 1: Login / Registro (Adaptado con clases flex de Bootstrap) -->
+    <!-- =============================================================
+         PANTALLA DE INGRESO
+         Cubre toda la ventana hasta que el usuario inicia sesión.
+         Un mismo formulario sirve para ingresar o para crear la cuenta.
+         ============================================================= -->
     <div id="auth-screen" class="vh-100 d-flex justify-content-center align-items-center fixed-top auth-screen">
         <div class="w-100 mx-auto p-4 auth-box tarjeta-auth">
             <div class="text-center mb-4">
@@ -19,40 +25,42 @@
                 <h1 class="h3 fw-bold text-cafe-oscuro">BIENVENIDO A CAFÉPRO</h1>
                 <p class="text-muted fw-bold text-uppercase small">Registra tu unidad productiva</p>
             </div>
-            
-           <form id="form-registro-inicial" class="d-flex flex-column gap-3">
-                <!-- NUEVO: Nombre del agricultor -->
+
+            <form id="form-registro-inicial" class="d-flex flex-column gap-3">
                 <div>
                     <label for="reg-agricultor" class="form-label small fw-bold text-uppercase text-muted">Nombre del Agricultor</label>
                     <input type="text" id="reg-agricultor" placeholder="Tu nombre (Ej: Juan Pérez)" class="form-control form-control-lg" required>
                 </div>
-                
+
                 <div>
                     <label for="reg-cafetal" class="form-label small fw-bold text-uppercase text-muted">Nombre del Cafetal</label>
                     <input type="text" id="reg-cafetal" placeholder="Nombre del Cafetal (Ej: Finca La Esperanza)" class="form-control form-control-lg" required>
                 </div>
-                
+
                 <div>
                     <label for="reg-password" class="form-label small fw-bold text-uppercase text-muted">Contraseña</label>
                     <input type="password" id="reg-password" placeholder="Ingresa tu contraseña" class="form-control form-control-lg" required>
                 </div>
-                
-                <!-- Enlaces recuperados adaptados a Bootstrap -->
+
                 <div class="text-center mt-1">
                     <span class="text-muted fw-bold texto-xs">Si es tu primera vez, completa los datos y se creará tu cuenta.</span>
                 </div>
 
+                <!-- Aquí el JavaScript muestra los errores de ingreso -->
                 <p id="auth-error" class="text-danger fw-bold small mb-0" role="alert"></p>
                 <button type="submit" class="btn btn-accion btn-lg w-100 mt-2">Entrar a mi Cafetal</button>
             </form>
         </div>
     </div>
 
-    <!-- CABECERA -->
+    <!-- =============================================================
+         CABECERA
+         Nivel 1: finca y agricultor (izquierda), fecha y hora (derecha).
+         Nivel 2: botón para cerrar sesión.
+         ============================================================= -->
     <header class="app-header">
         <div class="app-header__inner">
 
-            <!-- NIVEL 1: marca (izquierda) + fecha y hora (derecha) -->
             <div class="app-header__top">
                 <div class="app-header__brand">
                     <div class="app-header__logo" aria-hidden="true">☕</div>
@@ -68,7 +76,6 @@
                 </div>
             </div>
 
-            <!-- NIVEL 2: botón SALIR alineado a la derecha -->
             <div class="app-header__acciones">
                 <button id="btn-cerrar-sesion" type="button" class="app-header__salir">SALIR</button>
             </div>
@@ -76,12 +83,17 @@
         </div>
     </header>
 
-    <!-- CONTENEDOR PRINCIPAL -->
+    <!-- =============================================================
+         CONTENIDO PRINCIPAL
+         Contiene las tres pantallas (Inicio, Finanzas y Noticias).
+         Solo una se muestra a la vez; la barra inferior las intercambia.
+         ============================================================= -->
     <main class="container py-4 main-app">
 
-        <!-- PANTALLA 2: INICIO (Dashboard con Grid de Bootstrap) -->
+        <!-- PANTALLA 1: INICIO (calendario, precio, fase lunar y clima) -->
         <div id="inicio" class="tab-content active d-flex flex-column gap-4">
-            <!-- Calendario Agrícola -->
+
+            <!-- Calendario agrícola: se despliega y se pliega con el botón -->
             <article class="card shadow-sm border-0 border-warning border-2">
                 <button id="btn-toggle-calendar" class="btn btn-light btn-calendario w-100 p-3 d-flex justify-content-between align-items-center border-0" aria-expanded="false" aria-controls="cal-content">
                     <span class="fw-bold text-cafe-oscuro text-uppercase d-flex align-items-center">
@@ -91,18 +103,18 @@
                 </button>
                 <div id="cal-content" class="d-none p-3 bg-white border-top border-warning border-opacity-25">
                     <div class="text-center mb-3 fw-bold text-cafe-medio text-uppercase small cal-mes" id="cal-mes-actual" aria-live="polite"></div>
-                    
+
+                    <!-- Encabezado con los días de la semana -->
                     <div class="d-flex justify-content-between text-center fw-bold text-muted mb-2 text-uppercase texto-3xs" aria-hidden="true">
                         <div class="cal-col">Lu</div><div class="cal-col">Ma</div><div class="cal-col">Mi</div><div class="cal-col">Ju</div><div class="cal-col">Vi</div><div class="cal-col">Sa</div><div class="cal-col">Do</div>
                     </div>
-                    
-                    <div class="d-flex flex-wrap text-center fw-bold text-dark cal-dias" id="cal-dias">
-                        <!-- Llenado por JS -->
-                    </div>
+
+                    <!-- Los días del mes los dibuja el JavaScript -->
+                    <div class="d-flex flex-wrap text-center fw-bold text-dark cal-dias" id="cal-dias"></div>
                 </div>
             </article>
-            
-            <!-- Precio -->
+
+            <!-- Precio estimado de la carga de café (se pide al backend al cargar la página) -->
             <article class="card shadow-sm border-0 border-top border-warning border-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -115,7 +127,7 @@
                         <h2 id="precioDisplay" class="display-5 fw-bold text-dark mb-0" aria-live="polite">Cargando...</h2>
                         <p class="small text-muted fw-bold text-uppercase">Carga 125kg Pergamino Seco</p>
                     </div>
-                    <!-- En index.html, debajo del contenedor del precio -->
+                    <!-- Texto con la fuente de los datos (bolsa, TRM y hora de actualización) -->
                     <div class="text-center mt-2 px-3">
                         <p id="precioAviso" class="text-muted texto-3xs fst-italic mb-0">
                             Cargando información del mercado...
@@ -124,7 +136,7 @@
                 </div>
             </article>
 
-            <!-- Grid para Luna y Clima -->
+            <!-- Fase lunar y clima, en dos columnas -->
             <div class="row g-3">
                 <div class="col-6">
                     <div class="card h-100 shadow-sm border-0 text-white text-center card-luna">
@@ -151,8 +163,10 @@
             </div>
         </div>
 
-<!-- PANTALLA 3: FINANZAS -->
-<div id="calculadora" class="tab-content flex-column gap-4 d-none">
+        <!-- PANTALLA 2: FINANZAS (balance, formulario de registro e historial) -->
+        <div id="calculadora" class="tab-content flex-column gap-4 d-none">
+
+            <!-- Suma de las ganancias de todos los registros -->
             <div class="card shadow-sm border-0 mb-4 text-white card-balance">
                 <div class="card-body">
                     <p class="small text-uppercase fw-bold opacity-75 mb-1">Balance de Temporada</p>
@@ -160,6 +174,7 @@
                 </div>
             </div>
 
+            <!-- Formulario para registrar un pase de cosecha -->
             <div class="card shadow-sm border-0 border-bottom border-primary border-4 mb-4">
                 <div class="card-body">
                     <h2 class="h5 fw-bold text-uppercase mb-4">Registro de Pase</h2>
@@ -186,16 +201,18 @@
                     </form>
                 </div>
             </div>
+
+            <!-- Lista de registros guardados (la dibuja el JavaScript) -->
             <div id="historial-finanzas" aria-live="polite"></div>
         </div>
 
-   <!-- PANTALLA 4: NOTICIAS -->
-     <div id="noticias" class="tab-content flex-column gap-4 d-none">
+        <!-- PANTALLA 3: NOTICIAS -->
+        <div id="noticias" class="tab-content flex-column gap-4 d-none">
             <h2 class="h5 fw-bold text-uppercase d-flex align-items-center mb-0 text-dark">
                 <span class="me-2 fs-4" aria-hidden="true">📰</span> Noticias y Actualidad
             </h2>
 
-            <!-- Contenedor vacío donde JS inyectará las noticias de internet -->
+            <!-- Las noticias del sector las inserta el JavaScript al cargar la página -->
             <div id="contenedor-noticias">
                 <p class="text-center text-muted my-4">Cargando noticias del sector...</p>
             </div>
@@ -203,7 +220,10 @@
 
     </main>
 
-    <!-- Bottom Navigation -->
+    <!-- =============================================================
+         BARRA DE NAVEGACIÓN INFERIOR
+         Cada botón indica con data-tab la pantalla que debe mostrar.
+         ============================================================= -->
     <nav class="fixed-bottom bg-white border-top shadow-lg d-flex justify-content-around py-2 nav-inferior" role="navigation" aria-label="Navegación principal">
         <button class="btn btn-link text-decoration-none text-muted d-flex flex-column align-items-center nav-btn nav-active" data-tab="inicio" aria-label="Ir a Inicio">
             <span class="fs-4" aria-hidden="true">🏠</span>
@@ -219,7 +239,7 @@
         </button>
     </nav>
 
-    <!-- Scripts -->
+    <!-- Scripts: primero Bootstrap y luego la lógica de CaféPro -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="app.js"></script>
 </body>

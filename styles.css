@@ -1,10 +1,58 @@
+/* =====================================================================
+   styles.css — Estilos propios de CaféPro
+   Complementan a Bootstrap 5. Secciones:
+     1. Variables (colores y medidas)
+     2. Base de la página y decoración
+     3. Utilidades de color y tamaño de texto
+     4. Botones y navegación entre pantallas
+     5. Accesibilidad
+     6. Componentes de la aplicación
+     7. Pantalla de ingreso
+     8. Cabecera
+   ===================================================================== */
+
+
+/* ---------------------------------------------------------------------
+   1. VARIABLES
+   Se definen una vez aquí y se usan en todo el archivo con var(--nombre).
+   Si quieres cambiar la paleta, solo editas estos valores.
+   --------------------------------------------------------------------- */
 :root {
+    /* Paleta de CaféPro */
     --cafe-oscuro: #1b3a1a;
     --cafe-medio: #2D5A27;
     --cafe-acento: #F39C12;
     --cafe-fondo: #f0f4f1;
+
+    /* Cabecera: espaciado y forma */
+    --hdr-padding: 16px;
+    --hdr-gap: 12px;
+    --hdr-radius: 20px;
+    --hdr-ancho-max: 600px;               /* igual que .main-app */
+    --hdr-tactil: 44px;                   /* alto mínimo de un botón para el pulgar */
+
+    /* Cabecera: colores */
+    --hdr-texto: #ffffff;
+    --hdr-fondo-inicio: var(--cafe-oscuro);
+    --hdr-fondo-fin: var(--cafe-medio);
+    --hdr-vidrio-fondo: rgba(255, 255, 255, 0.14);
+    --hdr-vidrio-borde: rgba(255, 255, 255, 0.28);
+    --hdr-sombra: 0 6px 20px rgba(27, 58, 26, 0.28);
+
+    /* Cabecera: tipografía responsive. clamp(mínimo, ideal, máximo) ajusta el
+       tamaño según el ancho de la pantalla sin pasarse de los límites. */
+    --hdr-tam-finca: clamp(18px, 5.6vw, 22px);
+    --hdr-tam-agricultor: clamp(12px, 3.5vw, 14px);
+    --hdr-tam-fecha: clamp(11px, 3vw, 13px);
+    --hdr-tam-salir: clamp(14px, 3.8vw, 15px);
 }
 
+
+/* ---------------------------------------------------------------------
+   2. BASE DE LA PÁGINA Y DECORACIÓN
+   --------------------------------------------------------------------- */
+
+/* Fondo de la página: degradado claro sobre la imagen de colinas cafeteras. */
 body {
     background-color: var(--cafe-fondo);
     background-image:
@@ -17,7 +65,7 @@ body {
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
-/* Rama de café decorativa (esquina inferior derecha, detrás del contenido) */
+/* Rama de café decorativa en la esquina inferior derecha, detrás del contenido. */
 body::before {
     content: "";
     position: fixed;
@@ -28,14 +76,29 @@ body::before {
     background: url('decor-rama.svg') center / contain no-repeat;
     transform: scaleX(-1);
     opacity: 0.9;
-    pointer-events: none;
+    pointer-events: none;   /* la decoración no bloquea los clics */
     z-index: -1;
 }
 
+
+/* ---------------------------------------------------------------------
+   3. UTILIDADES DE COLOR Y TAMAÑO DE TEXTO
+   --------------------------------------------------------------------- */
 .text-cafe-oscuro { color: var(--cafe-oscuro) !important; }
 .text-cafe-medio { color: var(--cafe-medio) !important; }
-.header-gradient { background: linear-gradient(135deg, var(--cafe-oscuro) 0%, var(--cafe-medio) 100%); }
 
+/* Tamaños de letra pequeños (de mayor a menor) que Bootstrap no trae. */
+.texto-xs { font-size: 0.75rem; }
+.texto-2xs { font-size: 0.7rem; }
+.texto-3xs { font-size: 0.65rem; }
+.texto-4xs { font-size: 0.6rem; }
+
+
+/* ---------------------------------------------------------------------
+   4. BOTONES Y NAVEGACIÓN ENTRE PANTALLAS
+   --------------------------------------------------------------------- */
+
+/* Botón principal verde de la aplicación. */
 .btn-accion {
     background: linear-gradient(to bottom, var(--cafe-medio), var(--cafe-oscuro));
     color: white;
@@ -45,11 +108,11 @@ body::before {
     box-shadow: 0 4px 6px rgba(45, 90, 39, 0.2);
     transition: all 0.3s ease;
 }
-
 .btn-accion:hover { color: white; opacity: 0.9; }
 .btn-accion:active { transform: translateY(2px); box-shadow: 0 2px 4px rgba(45, 90, 39, 0.2); }
 
-/* Control de navegación SPA nativo */
+/* Las pantallas (Inicio, Finanzas, Noticias) están ocultas por defecto;
+   el JavaScript le agrega la clase "active" a la que se debe mostrar. */
 .tab-content { display: none; }
 .tab-content.active { display: flex; animation: fadeIn 0.3s ease; }
 
@@ -58,39 +121,71 @@ body::before {
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* Botón de la barra inferior que corresponde a la pantalla actual. */
 .nav-active { color: var(--cafe-medio) !important; transform: scale(1.05); transition: all 0.2s; }
 
-/* Accesibilidad estricta */
+/* Capas (z-index): la barra inferior queda por encima del contenido. */
+.nav-inferior { z-index: 1040; }
+.main-app { max-width: 600px; }   /* ancho máximo del contenido, pensado para celular */
+
+
+/* ---------------------------------------------------------------------
+   5. ACCESIBILIDAD
+   --------------------------------------------------------------------- */
+
+/* Borde verde visible cuando un campo o botón recibe el foco. */
 .form-control:focus, .btn:focus {
     border-color: var(--cafe-medio);
     box-shadow: 0 0 0 0.25rem rgba(45, 90, 39, 0.25);
 }
 
-/* Clases propias que reemplazan los estilos en línea */
-.auth-screen { z-index: 1050; }
-.auth-box { max-width: 400px; }
-.main-app { max-width: 600px; }
-.nav-inferior { z-index: 1040; }
-.texto-xs { font-size: 0.75rem; }
-.texto-2xs { font-size: 0.7rem; }
-.texto-3xs { font-size: 0.65rem; }
-.texto-4xs { font-size: 0.6rem; }
-.btn-calendario { background-color: #fffaf0; }
-.cal-icono { transition: transform 0.3s; }
-.cal-icono.rotar-180 { transform: rotate(180deg); }
-.cal-mes { letter-spacing: 1px; }
-.cal-dias { font-size: 0.85rem; }
-.cal-col { width: 14.28%; }
-.cal-dia { width: 28px; height: 28px; }
-.card-luna { background-color: #312e81; }
-.card-balance { background: linear-gradient(to right, #16a34a, #14532d); }
-.girando { animation: girar 0.8s linear infinite; }
-@keyframes girar { to { transform: rotate(360deg); } }
+/* Contorno amarillo al navegar con el teclado. */
 :focus-visible { outline: 3px solid #ffbf47; outline-offset: 3px; }
+
+/* Si el usuario pidió "reducir movimiento" en su dispositivo, se quitan las animaciones. */
 @media (prefers-reduced-motion: reduce) { .girando, .tab-content.active { animation: none; } }
 
-/* Fondo de la pantalla de ingreso: colinas cafeteras con neblina */
+
+/* ---------------------------------------------------------------------
+   6. COMPONENTES DE LA APLICACIÓN
+   --------------------------------------------------------------------- */
+
+/* Calendario agrícola */
+.btn-calendario { background-color: #fffaf0; }
+.cal-icono { transition: transform 0.3s; }
+.cal-icono.rotar-180 { transform: rotate(180deg); }   /* la flecha gira al abrir el calendario */
+.cal-mes { letter-spacing: 1px; }
+.cal-dias { font-size: 0.85rem; }
+.cal-col { width: 14.28%; }                            /* 100% / 7 días de la semana */
+.cal-dia { width: 28px; height: 28px; }
+
+/* Tarjetas de colores propios */
+.card-luna { background-color: #312e81; }
+.card-balance { background: linear-gradient(to right, #16a34a, #14532d); }
+
+/* Ícono de actualizar precio mientras consulta: gira sin parar. */
+.girando { animation: girar 0.8s linear infinite; }
+@keyframes girar { to { transform: rotate(360deg); } }
+
+/* Tarjetas de la app: más redondeadas y ligeramente translúcidas. */
+.main-app .card { border-radius: 1rem; }
+.main-app .card:not(.card-luna):not(.bg-info):not(.card-balance) {
+    background-color: rgba(255, 255, 255, 0.90);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+.main-app .card-luna { background-image: linear-gradient(160deg, #4b3fb3 0%, #25205f 100%); }
+.main-app .card.bg-info { background-image: linear-gradient(160deg, #35c9e6 0%, #0e86b4 100%); }
+
+
+/* ---------------------------------------------------------------------
+   7. PANTALLA DE INGRESO
+   --------------------------------------------------------------------- */
+
+/* Fondo de la pantalla de ingreso: colinas cafeteras con neblina.
+   Va por encima de todo (z-index 1050) hasta que el usuario entra. */
 .auth-screen {
+    z-index: 1050;
     background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(23, 64, 26, 0.10)),
         url('fondo-colinas.svg') center bottom / cover no-repeat;
@@ -99,7 +194,7 @@ body::before {
     padding: 1rem;
 }
 
-/* Ramas de café en las esquinas (inferior izquierda y superior derecha) */
+/* Ramas de café en las esquinas (inferior izquierda y superior derecha). */
 .auth-screen::before,
 .auth-screen::after {
     content: "";
@@ -113,6 +208,8 @@ body::before {
 .auth-screen::before { left: 0; bottom: 0; }
 .auth-screen::after  { right: 0; top: 0; transform: rotate(180deg); opacity: 0.9; }
 
+/* Tarjeta blanca semitransparente que contiene el formulario. */
+.auth-box { max-width: 400px; }
 .tarjeta-auth {
     position: relative;
     z-index: 1;
@@ -123,7 +220,7 @@ body::before {
     -webkit-backdrop-filter: blur(6px);
 }
 
-/* Logo circular de la tarjeta de ingreso */
+/* Logo circular (la taza de café) de la tarjeta de ingreso. */
 .tarjeta-auth .display-1 {
     width: 92px;
     height: 92px;
@@ -143,46 +240,11 @@ body::before {
     background-color: rgba(255, 255, 255, 0.95);
 }
 
-/* Tarjetas de la app: más redondeadas y ligeramente translúcidas (como el prototipo) */
-.main-app .card { border-radius: 1rem; }
-.main-app .card:not(.card-luna):not(.bg-info):not(.card-balance) {
-    background-color: rgba(255, 255, 255, 0.90);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-}
-.main-app .card-luna { background-image: linear-gradient(160deg, #4b3fb3 0%, #25205f 100%); }
-.main-app .card.bg-info { background-image: linear-gradient(160deg, #35c9e6 0%, #0e86b4 100%); }
 
-/* =====================================================================
-   CABECERA DE LA APP
-   Pega este bloque al final de styles.css.
-   (Ya no se usan .navbar ni .header-gradient en la cabecera.)
-   ===================================================================== */
-
-:root {
-    /* Espaciado y forma */
-    --hdr-padding: 16px;
-    --hdr-gap: 12px;
-    --hdr-radius: 20px;
-    --hdr-ancho-max: 600px;               /* igual que .main-app */
-    --hdr-tactil: 44px;                   /* alto mínimo para el pulgar */
-
-    /* Colores (reutilizan los de tu paleta) */
-    --hdr-texto: #ffffff;
-    --hdr-fondo-inicio: var(--cafe-oscuro);
-    --hdr-fondo-fin: var(--cafe-medio);
-    --hdr-vidrio-fondo: rgba(255, 255, 255, 0.14);
-    --hdr-vidrio-borde: rgba(255, 255, 255, 0.28);
-    --hdr-sombra: 0 6px 20px rgba(27, 58, 26, 0.28);
-
-    /* Tipografía responsive */
-    --hdr-tam-finca: clamp(18px, 5.6vw, 22px);
-    --hdr-tam-agricultor: clamp(12px, 3.5vw, 14px);
-    --hdr-tam-fecha: clamp(11px, 3vw, 13px);
-    --hdr-tam-salir: clamp(14px, 3.8vw, 15px);
-}
-
-/* Contenedor: fondo a todo el ancho, contenido centrado */
+/* ---------------------------------------------------------------------
+   8. CABECERA
+   Fondo a todo el ancho y contenido centrado. Se queda fija arriba al hacer scroll.
+   --------------------------------------------------------------------- */
 .app-header {
     position: sticky;
     top: 0;
@@ -202,10 +264,10 @@ body::before {
     padding: var(--hdr-padding);
 }
 
-/* Nivel 1 */
+/* Nivel 1: marca a la izquierda y fecha/hora a la derecha. */
 .app-header__top {
     display: flex;
-    flex-wrap: wrap;                      /* en pantallas muy angostas la fecha baja */
+    flex-wrap: wrap;                      /* en pantallas muy angostas la fecha baja a otra línea */
     align-items: center;
     justify-content: space-between;
     gap: var(--hdr-gap);
@@ -216,7 +278,7 @@ body::before {
     align-items: center;
     gap: var(--hdr-gap);
     flex: 1 1 140px;
-    min-width: 0;                         /* imprescindible para que funcione la elipsis */
+    min-width: 0;                         /* necesario para que funcione la elipsis (...) en textos largos */
 }
 
 .app-header__logo {
@@ -240,6 +302,7 @@ body::before {
     gap: 2px;
 }
 
+/* Nombre de la finca: grande, en negrita; si no cabe, se corta con "...". */
 .app-header__finca {
     margin: 0;
     font-size: var(--hdr-tam-finca);
@@ -253,6 +316,7 @@ body::before {
     text-overflow: ellipsis;
 }
 
+/* Nombre del agricultor: más pequeño y ligeramente transparente. */
 .app-header__agricultor {
     margin: 0;
     font-size: var(--hdr-tam-agricultor);
@@ -266,7 +330,7 @@ body::before {
     text-overflow: ellipsis;
 }
 
-/* Fecha y hora (píldora de "vidrio") */
+/* Fecha y hora dentro de una píldora translúcida ("vidrio"). */
 .app-header__fechahora {
     flex: 0 0 auto;
     margin-left: auto;                    /* siempre pegada a la derecha */
@@ -288,15 +352,15 @@ body::before {
     font-weight: 700;
     letter-spacing: 0.4px;
     text-transform: uppercase;
-    border-right: 1px solid var(--hdr-vidrio-borde);
+    border-right: 1px solid var(--hdr-vidrio-borde);   /* línea que separa la fecha de la hora */
 }
 
 .app-header__reloj {
     font-weight: 700;
-    font-variant-numeric: tabular-nums;   /* los números no "bailan" al cambiar */
+    font-variant-numeric: tabular-nums;   /* los números ocupan siempre el mismo ancho y no "bailan" */
 }
 
-/* Nivel 2: botón SALIR */
+/* Nivel 2: botón SALIR alineado a la derecha. */
 .app-header__acciones {
     display: flex;
     justify-content: flex-end;
@@ -305,7 +369,7 @@ body::before {
 .app-header__salir {
     -webkit-appearance: none;
     appearance: none;
-    min-height: var(--hdr-tactil);
+    min-height: var(--hdr-tactil);        /* tamaño cómodo para presionar con el pulgar */
     padding: 10px 22px;
     font-family: inherit;
     font-size: var(--hdr-tam-salir);
@@ -322,7 +386,7 @@ body::before {
     -webkit-tap-highlight-color: transparent;
 }
 
-/* Hover solo en dispositivos con mouse (en el celular se quedaría "pegado") */
+/* El efecto hover solo se aplica en dispositivos con mouse (en el celular se quedaría "pegado"). */
 @media (hover: hover) {
     .app-header__salir:hover {
         background: #ffffff;
@@ -330,14 +394,14 @@ body::before {
     }
 }
 
-/* Al presionar (mouse o dedo) */
+/* Efecto al presionar el botón (con mouse o con el dedo). */
 .app-header__salir:active {
     background: #ffffff;
     color: var(--cafe-oscuro);
     transform: scale(0.96);
 }
 
-/* Pantallas menores a 360px */
+/* Pantallas menores a 360 px: elementos un poco más compactos. */
 @media (max-width: 359px) {
     .app-header__logo {
         width: 40px;
